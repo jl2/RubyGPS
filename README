@@ -1,0 +1,19 @@
+This is a Ruby library for working with GPX files from GPS recievers.
+
+It's very similar to the stuff I have at http://github.com/jl2/gpx_tools but implemented in Ruby.
+
+It's currently at a very early stage, and consists primarily of a single file, which simply parses a GPX file and displays some statistics about the tracks.
+
+My plan is to expand it into a full library and make a GUI for it using fxRuby or QtRuby.
+
+Dependencies:
+    libxml-ruby
+    Using REXML was *really slow*, so I changed to libxml-ruby.  Debian users can install it from the Debian repos or it can be installed using "gem install -r libxml-ruby".
+    For more information see http://libxml.rubyforge.org
+
+    GeographicLib
+    The utmconvert directory contains source code and a SWIG interface file for a module wrapping the function GeographicLib::UTMUPS::Forward from GeographicLib.  This function is used to accurately convert latitude/longitude to UTM.
+    The library and development files are in the Debian repos, or can be downloaded from http://geographiclib.sourceforge.net/
+
+
+
