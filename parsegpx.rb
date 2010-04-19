@@ -31,14 +31,18 @@ doc = XML::Document.file ARGV[0]
 
 doc.root.namespaces.default_prefix='gpx'
 
+Point = Struct.new(:x, :y, :ele, :tm)
+
 prev = nil
 cur = nil
 prevTime = nil
 curTime = nil
 
 def distance(c, p)
-  dx, dy, dz = c[0]-p[0], c[1]-p[1], c[2]-p[2]
-  Math::sqrt(dx*dx+dy*dy+dz*dz)
+  dx = c.x - p.x
+  dy = c.y - p.y
+  dz = c.ele - p.ele
+  Math::sqrt(dx*dx + dy*dy + dz*dz)
 end
 
 curMax = totDist = totTime = 0
@@ -68,22 +72,22 @@ trks.each do | trk |
       # Convert lat/long to UTM
       utm = Utmconvert::to_utm(tpt.attributes['lat'].to_f, tpt.attributes['lon'].to_f)
 
-      # TODO: stop being retarded and make a data structure to store this correctly
-      cur = [utm.x, utm.y, cele, ctime]
+      cur = Point.new(utm.x, utm.y, cele, ctime)
 
       # Update incremental results if there was a previous point
       if prev then
 
         dist = distance(cur, prev)
-        speed = dist / (cur[3]-prev[3])
+        dt = cur.tm - prev.tm
+        speed = dist / dt
 
         curMax = speed if speed > curMax
         totDist += dist
-        totTime += (cur[3]-prev[3])
+        totTime += dt
       end
 
       # Save current to previous
-      prev = cur
+      prev = cur.dup
     end
     pts = nil
 
